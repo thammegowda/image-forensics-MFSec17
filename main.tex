@@ -17,45 +17,62 @@
 
 
 % The following packages can be found on http:\\www.ctan.org
-%\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{graphicx} % for pdf, bitmapped graphics files
+\graphicspath{{./images/}}
 %\usepackage{epsfig} % for postscript graphics files
 %\usepackage{mathptmx} % assumes new font selection scheme installed
 %\usepackage{times} % assumes new font selection scheme installed
 %\usepackage{amsmath} % assumes amsmath package installed
 %\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{listings}
+\usepackage{url}
 
-\title{\LARGE \bf
-Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
+%%%%%%%%% JSON BEGIN %%%%%
+\usepackage{xcolor}
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
 }
+%%%%%%%%%%%%%%%%%%%%JSON END %%%%
 
-%\author{ \parbox{3 in}{\centering Huibert Kwakernaak*
-%         \thanks{*Use the $\backslash$thanks command to put information here}\\
-%         Faculty of Electrical Engineering, Mathematics and Computer Science\\
-%         University of Twente\\
-%         7500 AE Enschede, The Netherlands\\
-%         {\tt\small h.kwakernaak@autsubmit.com}}
-%         \hspace*{ 0.5 in}
-%         \parbox{3 in}{ \centering Pradeep Misra**
-%         \thanks{**The footnote marks may be inserted manually}\\
-%        Department of Electrical Engineering \\
-%         Wright State University\\
-%         Dayton, OH 45435, USA\\
-%         {\tt\small pmisra@cs.wright.edu}}
-%}
+\title{\bf An Open Source Image Recognition Framework using Apache Tika and ImageNet model of Tensorflow}
 
-\author{Huibert Kwakernaak$^{1}$ and Pradeep Misra$^{2}$% <-this % stops a space
-\thanks{*This work was not supported by any organization}% <-this % stops a space
-\thanks{$^{1}$H. Kwakernaak is with Faculty of Electrical Engineering, Mathematics and Computer Science,
-        University of Twente, 7500 AE Enschede, The Netherlands
-        {\tt\small h.kwakernaak at papercept.net}}%
-\thanks{$^{2}$P. Misra is with the Department of Electrical Engineering, Wright State University,
-        Dayton, OH 45435, USA
-        {\tt\small p.misra at ieee.org}}%
+\author{Thamme Gowda$^{1,2,3}$ and Chris Mattmann$^{1,2,3}$% <-this % stops a space
+\thanks{*This work was supported by DARPA MEMEX program}% <-this % stops a space
+\thanks{$^{1}$University of Southern California, Los Angeles, CA }%
+\thanks{$^{2}$NASA Jet Propulsion Laboratory, Pasadena, CA }%
+\thanks{$^{3}$Apache Software Foundation, Non-Profit Organization}%
 }
-
-
 \begin{document}
-
 
 
 \maketitle
@@ -65,185 +82,202 @@ Preparation of Papers for IEEE Sponsored Conferences \& Symposia*
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-
-This electronic document is a ÒliveÓ template. The various components of your paper [title, text, heads, etc.] are already defined on the style sheet, as illustrated by the portions given in this document.
-
+This paper describes uses of image recognition in content analysis, methods of integration and associated challenges and our final architecture of the system. //TODO: write this later as a summary of paper
 \end{abstract}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
+%% TODO: introduce Content Analysis and role in DARPA MEMEX
+The objectives of Content Analysis are interpreting its meaning and establishing relationships \cite{}. Content analysis spreads across multitudes of multimedia types like text in plain as well as rich formats, audio, image and video. The growth in heterogeneousness of computing gave birth to various multimedia formats in the recent decades \cite{}.  
 
-This template, modified in MS Word 2003 and saved as ÒWord 97-2003 \& 6.0/95 Ð RTFÓ for the PC, provides authors with most of the formatting specifications needed for preparing electronic versions of their papers. All standard paper components have been specified for three reasons: (1) ease of use when formatting individual papers, (2) automatic compliance to electronic requirements that facilitate the concurrent or later production of electronic products, and (3) conformity of style throughout a conference proceedings. Margins, column widths, line spacing, and type styles are built-in; examples of the type styles are provided throughout this document and are identified in italic type, within parentheses, following the example. Some components, such as multi-leveled equations, graphics, and tables are not prescribed, although the various table text styles are provided. The formatter will need to create these components, incorporating the applicable criteria that follow.
+Defense Advanced Research Projects Agency (DARPA) started a program called MEMEX\cite{} to help law keeping agencies to monitor and counteract the illegal activities on the web. The first challenge in such systems is to retrieve dark and deep content from the World Wide Web. Understanding the meaning and relationships are essential for performing various activities like filtering, classification, and ranking the severity etc. While humans can only handle efficiently and precisely a small set of datasets, considering the scale of the dark and deep Web, automating the process is inherent requirement for its mission.
 
-\section{PROCEDURE FOR PAPER SUBMISSION}
+%% TODO: Introduce Tika and content analysis
+Apache Tika\cite{mattmann2011tika} is a Free and Open Source (FOSS) content detection framework that can detect the patterns in raw content and determine its MIME and file type. It is also a rich pool of parsers, where its auto detection features can selectively apply parsers based on content type. However, reading or parsing content is a low level task compared to the high level task of interpreting the semantics of the content. In this paper we describe some useful enrichments to the framework that integrates recent innovations in the Artificial Intelligence (AI) domains to assist the automated content analysis. A vast majority of content on the web is in either plain or rich textual form \cite{}. Recently, Apache Tika added support for information extraction by the application of Natural Language Processing\cite{}. The newer version of Tika can be configured to recognize names in the content where it delegates the task to some of the popular Natural Language Processing toolkits. It supports various Named Entity Recognition(NER) techniques from toolkits like Stanford CoreNLP\cite{}, Apache OpenNLP\cite{}, MIT Lincoln Lab's MITIE \cite{}. Named Entity Recognition tasks from the text helps to briefly analyze the topics of the text. However, considering the fact that the image data on the web has the next biggest share, we historically lacked tools for automatically analyzing the graphical content without making much errors. Thanks to the recent advancements in the domains of computer vision, especially in object recognition, we have systems which have nearer or better performance than average human beings.
 
-\subsection{Selecting a Template (Heading 2)}
+%% TODO: Introduce the task of image/object recognition
+Object recognition is a standard problem in computer vision which deals with the recognition of objects of interests in the graphical data. In the context of images it is often called as image recognition. Historically image recognition was a challenging task due to the fact that the accuracy of the recognized objects were much lower than average Human performance. However, due to the recent come back of deep neural networks and availability of larger datasets and faster computing resources, the performance crossed the human performance. 
+%% TODO: introduce Image net
+%% TODO: introduce Tensorflow
 
-First, confirm that you have the correct template for your paper size. This template has been tailored for output on the US-letter paper size. Please do not use it for A4 paper since the margin requirements for A4 papers may be different from Letter paper size.
+%% TODO: Describe the bigger challenge & Summarize how all these fit together
+As of October 2016, the most popular deep learning frameworks are focused towards performance gain from native code and GPU optimization for fast matrix manipulations\cite{}. In our case, Tensorflow doesnot provide out of the box bindings to Java based frameworks. Apache Tika is primarily written in Java and thus integrating with Tensorflow is not straight forward like any other JVM compatible libraries. In this paper we explore various methods of integration and their pros and cons. 
 
-\subsection{Maintaining the Integrity of the Specifications}
+%% brief overview of rest of the paper
+The organization of the rest of this paper is as follows: Section \ref{sec:memex} provides an overview of the analysis task in which we describe data collection, analysis. Next, Section \ref{sec:obj-rec} describes the object recognition process and recent success with deep learning and the current state of the art model. Section \ref{sec:integration} covers various integration techniques we tried and the internal workings of it. Section \ref{sec:evaluation} provides pros and cons of each integration methods.
 
-The template is used to format your paper and style the text. All margins, column widths, line spaces, and text fonts are prescribed; please do not alter them. You may note peculiarities. For example, the head margin in this template measures proportionately more than is customary. This measurement and others are deliberate, using specifications that anticipate your paper as one part of the entire proceedings, and not as an independent document. Please do not revise any of the current designations
+\section{CONTENT ANALYSIS IN MEMEX PROGRAM} \label{sec:memex}
 
-\section{MATH}
+\subsection{Data Collection}
+\label{sec:memex-datacollection}
 
-Before you begin to format your paper, first write and save the content as a separate text file. Keep your text and graphic files separate until after the text has been formatted and styled. Do not use hard tabs, and limit use of hard returns to only one return at the end of a paragraph. Do not add any kind of pagination anywhere in the paper. Do not number text heads-the template will do that for you.
+\subsection{Memex Dataset} \label{sec:memex-dataset}
 
-Finally, complete content and organizational editing before formatting. Please take note of the following items when proofreading spelling and grammar:
+\subsection{Visualization} \label{sec:memex-visualization}
 
-\subsection{Abbreviations and Acronyms} Define abbreviations and acronyms the first time they are used in the text, even after they have been defined in the abstract. Abbreviations such as IEEE, SI, MKS, CGS, sc, dc, and rms do not have to be defined. Do not use abbreviations in the title or heads unless they are unavoidable.
+\section{OBJECT RECOGNITION} \label{sec:obj-rec}
+\subsection{ImageNet} \label{sec:imagenet}
+\subsection{Deep Learning } \label{sec:deeplearning-imagenet}
+\subsection{Inception Network } \label{sec:inceptionnet}
 
-\subsection{Units}
-
+\section{INTEGRATION} \label{sec:integration}
+We defined an interface named \texttt{ObjectRecogniser} to facilitate multiple implementation of object recognizer. We developed the rest of the parsing framework against the \texttt{ObjectRecogniser} contract. The main part of this contract is a function that accepts image data and returns list of \texttt{RecognisedObject}s
+%% TODO: Summarize the challenges
+%% TODO: List the available methods
+The following methods of integration were investigated in the order of listing:
 \begin{itemize}
+\item Command Line Invocation
+\item Java Native Interface
+\item Remote Procedure Call
+\item Representational State Transfer API 
+\end{itemize}
+%% TODO: Enumerate the methods, put figures, mention pros and cons
+%% 1. CLI
+\subsection{Command Line Invocation (CLI)} \label{sec:int-cli}
+Command Line Invocation is the most simple way of integration. We created a python based CLI tool as an entry point to tensorflow's image recognition network. This tool inspected the environment for its requirements. When its requirements were not met it simply failed by reporting the failure. Some of its requirements were: 
+\begin{enumerate}
+\item NumPy
+\item TensorFlow
+\item Transitive dependencies of TensorFlow
+\item Inception Net Model
+\end{enumerate}
+Apache Tika executed in the JVM process where as on every invocation of CLI tool, a new native process was created and destroyed.  Tika passed image path as commandline argument to the tool. The tool parsed the arguments, passed the content to tensorflow network and reported the results by printing it to standard output.  Tika parser then read the result from the output stream of this external process. The pros and cons are described in the Section \ref{sec:eval-cli}
+\includegraphics[scale=0.40]{tika-tflow-cli-design}
 
-\item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as Ò3.5-inch disk driveÓ.
-\item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
-\item Do not mix complete spellings and abbreviations of units: ÒWb/m2Ó or Òwebers per square meterÓ, not Òwebers/m2Ó.  Spell out units when they appear in text: Ò. . . a few henriesÓ, not Ò. . . a few HÓ.
-\item Use a zero before decimal points: Ò0.25Ó, not Ò.25Ó. Use Òcm3Ó, not ÒccÓ. (bullet list)
+%% 2. JNI
+\subsection{Java Native Interface (JNI)} \label{sec:int-jni}
+The next approach we investigated was the Java Native Interface (JNI). JNI is the vendors' recommended way of integrating native code libraries to Java frameworks\cite{}. JNI acts as glue between bytecode instructions that runs within Java Virtual Machine (JVM) and the native  code instructions that runs directly on the CPU. Theoretically, this is the best way of merging JVM world with the native code\cite{}. At runtime, the bytecode of Tika (caller) and native code of tensorflow (callee) runs within the single process from the operating system's perspective. 
 
+\includegraphics[scale=0.40]{tika-tflow-jni-design}
+
+%% 3. RPC
+\subsection{Remote Procedure Call (RPC)} \label{sec:int-rpc}
+The original developers of Tensorflow framework recommended the use of Remote Procedure Call (RPC) based integration for the production systems\cite{}. RPC is a client-server based architecture in which caller acts as a RPC client and callee serves as a server in a different address space. In our case, we embedded RPC client in Tika JVM and exported Tensorflow image recognition capabilities as remote procedures via RPC service. We used Tensorflow Serving\cite{} which was a GRPC\cite{} server implemented in C++ and also created a docker container to host it.
+
+\includegraphics[scale=0.40]{tika-tflow-RPC-design}
+
+%% 4. REST
+\subsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:int-rest}
+Representation State Transfer (REST) is a popular architecture paradigm for connecting heterogeneous system without the need of sessions\cite{}. The REST application programming interfaces (API) is powered by an HyperText Transfer Protocol (HTTP) which abstracts the complexities of Transmission Control Protocol.
+We crated REST API for tensorflow image recognition using python Flask\cite{}. The Flask based HTTP service registered a TCP port from the operating system and offered HTTP API end points.
+One of the end point was accepting a HTTP POST request with image data in the multipart form \cite{} body. This service loaded the InceptionNet \cite{} model during the initialization phase and kept the model in memory for reusing it during the future HTTP Requests. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.50]{military_dog}
+    \caption{Military Person with a German Shepherd Dog \newline Courtesy: Wikimedia Commons}
+    \label{fig:military-dog}
+\end{figure}
+The REST API, upon recognizing the objects in the image \ref{fig:military-dog}, returned the response in the JSON format with the following structure:
+
+\begin{lstlisting}[language=json, label=code:json-output,
+	frame=single, xleftmargin=5.0pt, xrightmargin=5.0pt,
+    caption=JSON Response from REST API]
+{
+  "confidence": [
+    0.3620266020298004,
+    0.13061314821243286
+  ],
+  "classnames": [
+    "German shepherd,
+    German shepherd dog,
+    German police dog, alsatian",
+    "military uniform"
+  ],
+  "classids": [
+    211,
+    866
+  ],
+  "time": {
+    "read": 1,
+    "units": "ms",
+    "classification": 257
+  }
+}
+\end{lstlisting}
+
+On the other side of the system, we implemented the class \texttt{TensorflowRESTRecogniser} which used HTTP Client to communicate with REST API. This implementation of \texttt{ObjectRecogniser} converted the image data to HTTP POST request with multipart form data and sent it to REST API. It parsed the JSON response to retrieve the object names, ids and confidence scores. We also created a docker specification for bootstrapping the tensorflow image recognition REST API for semi automated deployment of the system.
+
+\includegraphics[scale=0.40]{tika-tflow-rest-design}
+
+
+\section {EVALUATION} \label{sec:evaluation}
+\subsection{Command Line Invocation (CLI)} \label{sec:eval-cli}
+The average time taken to recognize image in this method was 6 seconds.
+
+The pros of Command Line Interface:
+\begin{itemize}
+\item Easy to develop and test
+\item Easy to install the requirements
+\item Isolation of dependencies / concerns
 \end{itemize}
 
-
-\subsection{Equations}
-
-The equations are an exception to the prescribed specifications of this template. You will need to determine whether or not your equation should be typed using either the Times New Roman or the Symbol font (please no other font). To create multileveled equations, it may be necessary to treat the equation as a graphic and insert it into the text after your paper is styled. Number equations consecutively. Equation numbers, within parentheses, are to position flush right, as in (1), using a right tab stop. To make your equations more compact, you may use the solidus ( / ), the exp function, or appropriate exponents. Italicize Roman symbols for quantities and variables, but not Greek symbols. Use a long dash rather than a hyphen for a minus sign. Punctuate equations with commas or periods when they are part of a sentence, as in
-
-$$
-\alpha + \beta = \chi \eqno{(1)}
-$$
-
-Note that the equation is centered using a center tab stop. Be sure that the symbols in your equation have been defined before or immediately following the equation. Use Ò(1)Ó, not ÒEq. (1)Ó or Òequation (1)Ó, except at the beginning of a sentence: ÒEquation (1) is . . .Ó
-
-\subsection{Some Common Mistakes}
+The cons of this technique:
 \begin{itemize}
-
-
-\item The word ÒdataÓ is plural, not singular.
-\item The subscript for the permeability of vacuum ?0, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ÒoÓ.
-\item In American English, commas, semi-/colons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
-\item A graph within a graph is an ÒinsetÓ, not an ÒinsertÓ. The word alternatively is preferred to the word ÒalternatelyÓ (unless you really mean something that alternates).
-\item Do not use the word ÒessentiallyÓ to mean ÒapproximatelyÓ or ÒeffectivelyÓ.
-\item In your paper title, if the words Òthat usesÓ can accurately replace the word ÒusingÓ, capitalize the ÒuÓ; if not, keep using lower-cased.
-\item Be aware of the different meanings of the homophones ÒaffectÓ and ÒeffectÓ, ÒcomplementÓ and ÒcomplimentÓ, ÒdiscreetÓ and ÒdiscreteÓ, ÒprincipalÓ and ÒprincipleÓ.
-\item Do not confuse ÒimplyÓ and ÒinferÓ.
-\item The prefix ÒnonÓ is not a word; it should be joined to the word it modifies, usually without a hyphen.
-\item There is no period after the ÒetÓ in the Latin abbreviation Òet al.Ó.
-\item The abbreviation Òi.e.Ó means Òthat isÓ, and the abbreviation Òe.g.Ó means Òfor exampleÓ.
-
+\item The image data is shared via secondary storage which puts additional load on the  secondary storage.
+\item An independent process is created and destroyed for every parse call.
+\item The ImageNet model is loaded and unloaded for every parse call due to ephemeral nature of processes. The InceptionV3 model used in our experiments is approximately 200MB in size, thus 200MB of additional IO for each parse call.
 \end{itemize}
 
+%% 2. JNI
+\subsection{Java Native Interface (JNI)} \label{sec:eval-jni}
 
-\section{USING THE TEMPLATE}
+The pros of this method are 
+\begin{itemize}
+\item The most efficient utilization of resources
+\item No external input-output required as the entire task runs in a single process.
+\end{itemize}
 
-Use this sample document as your LaTeX source file to create your document. Save this file as {\bf root.tex}. You have to make sure to use the cls file that came with this distribution. If you use a different style file, you cannot expect to get required margins. Note also that when you are creating your out PDF file, the source file is only part of the equation. {\it Your \TeX\ $\rightarrow$ PDF filter determines the output file size. Even if you make all the specifications to output a letter file in the source - if you filter is set to produce A4, you will only get A4 output. }
+The cons of this method are:
+\begin{itemize}
+  \item The JNI glue code has to be compiled and packaged for all the platforms.
+  \item Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}. 
+\end{itemize}
 
-It is impossible to account for all possible situation, one would encounter using \TeX. If you are using multiple \TeX\ files you must make sure that the ``MAIN`` source file is called root.tex - this is particularly important if your conference is using PaperPlaza's built in \TeX\ to PDF conversion tool.
+%% 3. RPC
+\subsection{Remote procedure Call (RPC)} \label{sec:eval-rpc}
 
-\subsection{Headings, etc}
+The pros of this method are 
+\begin{itemize}
+\item An efficient way for integrating heterogeneous systems.
+\item The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization.
+\end{itemize}
 
-Text heads organize the topics on a relational, hierarchical basis. For example, the paper title is the primary text head because all subsequent material relates and elaborates on this one topic. If there are two or more sub-topics, the next level head (uppercase Roman numerals) should be used and, conversely, if there are not at least two sub-topics, then no subheads should be introduced. Styles named ÒHeading 1Ó, ÒHeading 2Ó, ÒHeading 3Ó, and ÒHeading 4Ó are prescribed.
+The cons of this method are:
+\begin{itemize}
+  \item An RPC client adds additional dependencies to the already existing Java Framework.
+  \item RPC client version should be in sync with the RPC server. The RPC client may depend on specific versions of transitive dependencies which introduce conflicts with existing functionality.
+\end{itemize}
 
-\subsection{Figures and Tables}
+%% 4. REST
+\subsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:eval-rest}
 
-Positioning Figures and Tables: Place figures and tables at the top and bottom of columns. Avoid placing them in the middle of columns. Large figures and tables may span across both columns. Figure captions should be below the figures; table heads should appear above the tables. Insert figures and tables after they are cited in the text. Use the abbreviation ÒFig. 1Ó, even at the beginning of a sentence.
+The average REST API call was 260 milliseconds when the client and server were in the same host (i.e., the connection via loopback interface).
 
-\begin{table}[h]
-\caption{An Example of a Table}
-\label{table_example}
-\begin{center}
-\begin{tabular}{|c||c|}
-\hline
-One & Two\\
-\hline
-Three & Four\\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+The pros of this method are 
+\begin{itemize}
+\item An efficient and popular way for integrating heterogeneous systems.
+\item The REST API is language agnostic.
+\item The underlying HTTP is stable and well documented.
+\end{itemize}
 
-
-   \begin{figure}[thpb]
-      \centering
-      \framebox{\parbox{3in}{We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
-}}
-      %\includegraphics[scale=1.0]{figurefile}
-      \caption{Inductance of oscillation winding on amorphous
-       magnetic core versus DC bias magnetic field}
-      \label{figurelabel}
-   \end{figure}
-   
-
-Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather than symbols or abbreviations when writing Figure axis labels to avoid confusing the reader. As an example, write the quantity ÒMagnetizationÓ, or ÒMagnetization, MÓ, not just ÒMÓ. If including units in the label, present them within parentheses. Do not label axes only with units. In the example, write ÒMagnetization (A/m)Ó or ÒMagnetization {A[m(1)]}Ó, not just ÒA/mÓ. Do not label axes with a ratio of quantities and units. For example, write ÒTemperature (K)Ó, not ÒTemperature/K.Ó
+The cons of this method are 
+\begin{itemize}
+\item The performance is slightly lower than RPC due to the additional overhead of HTTP.
+\item Slightly higher network io due to additional metadata introduced by HTTP to the packets.
+\end{itemize}
 
 \section{CONCLUSIONS}
-
-A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest applications and extensions. 
-
-\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
-                                  % on the last page of the document manually. It shortens
-                                  % the textheight of the last page by a suitable amount.
-                                  % This command does not take effect until the next page
-                                  % so it should come on the page before the last. Make
-                                  % sure that you do not shorten the textheight too much.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{APPENDIX}
-
-Appendixes should appear before the acknowledgment.
+\subsection{Winner: REST API}
+%% TODO: link to Wiki page 
 
 \section*{ACKNOWLEDGMENT}
-
-The preferred spelling of the word ÒacknowledgmentÓ in America is without an ÒeÓ after the ÒgÓ. Avoid the stilted expression, ÒOne of us (R. B. G.) thanks . . .Ó  Instead, try ÒR. B. G. thanksÓ. Put sponsor acknowledgments in the unnumbered footnote on the first page.
-
-
+This work was supported by the DARPA XDATA/Memex program. In addition, the NSF Polar Cyberinfrastructure award numbers PLR-1348450 and PLR-144562 funded a portion of the work. Effort supported in part by JPL, managed by the California Institute of Technology on behalf of NASA.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-References are important to the reader; therefore, each citation must be complete and correct. If at all possible, references should be commonly available publications.
-
-
-
-\begin{thebibliography}{99}
-
-\bibitem{c1} G. O. Young, ÒSynthetic structure of industrial plastics (Book style with paper title and editor),Ó 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15Ð64.
-\bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123Ð135.
-\bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
-\bibitem{c4} B. Smith, ÒAn approach to graphs of linear forms (Unpublished work style),Ó unpublished.
-\bibitem{c5} E. H. Miller, ÒA note on reflector arrays (Periodical styleÑAccepted for publication),Ó IEEE Trans. Antennas Propagat., to be publised.
-\bibitem{c6} J. Wang, ÒFundamentals of erbium-doped fiber amplifiers arrays (Periodical styleÑSubmitted for publication),Ó IEEE J. Quantum Electron., submitted for publication.
-\bibitem{c7} C. J. Kaufman, Rocky Mountain Research Lab., Boulder, CO, private communication, May 1995.
-\bibitem{c8} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ÒElectron spectroscopy studies on magneto-optical media and plastic substrate interfaces(Translation Journals style),Ó IEEE Transl. J. Magn.Jpn., vol. 2, Aug. 1987, pp. 740Ð741 [Dig. 9th Annu. Conf. Magnetics Japan, 1982, p. 301].
-\bibitem{c9} M. Young, The Techincal Writers Handbook.  Mill Valley, CA: University Science, 1989.
-\bibitem{c10} J. U. Duncombe, ÒInfrared navigationÑPart I: An assessment of feasibility (Periodical style),Ó IEEE Trans. Electron Devices, vol. ED-11, pp. 34Ð39, Jan. 1959.
-\bibitem{c11} S. Chen, B. Mulgrew, and P. M. Grant, ÒA clustering technique for digital communications channel equalization using radial basis function networks,Ó IEEE Trans. Neural Networks, vol. 4, pp. 570Ð578, July 1993.
-\bibitem{c12} R. W. Lucky, ÒAutomatic equalization for digital communication,Ó Bell Syst. Tech. J., vol. 44, no. 4, pp. 547Ð588, Apr. 1965.
-\bibitem{c13} S. P. Bingulac, ÒOn the compatibility of adaptive controllers (Published Conference Proceedings style),Ó in Proc. 4th Annu. Allerton Conf. Circuits and Systems Theory, New York, 1994, pp. 8Ð16.
-\bibitem{c14} G. R. Faulhaber, ÒDesign of service systems with priority reservation,Ó in Conf. Rec. 1995 IEEE Int. Conf. Communications, pp. 3Ð8.
-\bibitem{c15} W. D. Doyle, ÒMagnetization reversal in films with biaxial anisotropy,Ó in 1987 Proc. INTERMAG Conf., pp. 2.2-1Ð2.2-6.
-\bibitem{c16} G. W. Juette and L. E. Zeffanella, ÒRadio noise currents n short sections on bundle conductors (Presented Conference Paper style),Ó presented at the IEEE Summer power Meeting, Dallas, TX, June 22Ð27, 1990, Paper 90 SM 690-0 PWRS.
-\bibitem{c17} J. G. Kreifeldt, ÒAn analysis of surface-detected EMG as an amplitude-modulated noise,Ó presented at the 1989 Int. Conf. Medicine and Biological Engineering, Chicago, IL.
-\bibitem{c18} J. Williams, ÒNarrow-band analyzer (Thesis or Dissertation style),Ó Ph.D. dissertation, Dept. Elect. Eng., Harvard Univ., Cambridge, MA, 1993. 
-\bibitem{c19} N. Kawasaki, ÒParametric study of thermal and chemical nonequilibrium nozzle flow,Ó M.S. thesis, Dept. Electron. Eng., Osaka Univ., Osaka, Japan, 1993.
-\bibitem{c20} J. P. Wilkinson, ÒNonlinear resonant circuit devices (Patent style),Ó U.S. Patent 3 624 12, July 16, 1990. 
-
-
-
-
-
-
-\end{thebibliography}
-
-
-
+\bibliographystyle{plain} % or try abbrvnat or unsrtnat
+\bibliography{references} % refers to example.bib
 
 \end{document}
