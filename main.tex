@@ -1,7 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%2345678901234567890123456789012345678901234567890123456789012345678901234567890
-%        1         2         3         4         5         6         7         8
-
 \documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
                                                           % if you need a4paper
 %\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4
@@ -64,7 +60,7 @@
 }
 %%%%%%%%%%%%%%%%%%%%JSON END %%%%
 
-\title{\bf An Open Source Image Recognition Framework using Apache Tika and ImageNet model of Tensorflow}
+\title{\bf An Open Source Image Recognition Framework using Apache Tika and Tensorflow}
 
 \author{Thamme Gowda$^{1,2,3}$ and Chris Mattmann$^{1,2,3}$% <-this % stops a space
 \thanks{*This work was supported by DARPA MEMEX program}% <-this % stops a space
@@ -82,23 +78,26 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-This paper describes uses of image recognition in content analysis, methods of integration and associated challenges and our final architecture of the system. //TODO: write this later as a summary of paper
+This paper describes uses of image recognition in content analysis, methods of integration and associated challenges and our final architecture of the system. //TODO: write this later as a summary of paper...
 \end{abstract}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
 %% TODO: introduce Content Analysis and role in DARPA MEMEX
-The objectives of Content Analysis are interpreting its meaning and establishing relationships \cite{}. Content analysis spreads across multitudes of multimedia types like text in plain as well as rich formats, audio, image and video. The growth in heterogeneousness of computing gave birth to various multimedia formats in the recent decades \cite{}.  
+The objectives of Content Analysis are interpreting its meaning and establishing relationships \cite{}. Content analysis spreads across multimedia types like text in plain as well as rich formats, audio, image and video. //TODO: more here
 
-Defense Advanced Research Projects Agency (DARPA) started a program called MEMEX\cite{} to help law keeping agencies to monitor and counteract the illegal activities on the web. The first challenge in such systems is to retrieve dark and deep content from the World Wide Web. Understanding the meaning and relationships are essential for performing various activities like filtering, classification, and ranking the severity etc. While humans can only handle efficiently and precisely a small set of datasets, considering the scale of the dark and deep Web, automating the process is inherent requirement for its mission.
+
+Defense Advanced Research Projects Agency (DARPA) started a program called MEMEX\cite{} to help law keeping agencies to monitor and counteract the illegal activities on the web. The first challenge in such systems is to retrieve dark and deep content from the World Wide Web. Understanding the meaning and relationships are essential for performing various activities like filtering, classification, and ranking the severity etc. While humans can only efficiently and precisely analyze a small set of datasets, considering the scale of the dark and deep Web, automating the process is inherent requirement for its mission.
 
 %% TODO: Introduce Tika and content analysis
-Apache Tika\cite{mattmann2011tika} is a Free and Open Source (FOSS) content detection framework that can detect the patterns in raw content and determine its MIME and file type. It is also a rich pool of parsers, where its auto detection features can selectively apply parsers based on content type. However, reading or parsing content is a low level task compared to the high level task of interpreting the semantics of the content. In this paper we describe some useful enrichments to the framework that integrates recent innovations in the Artificial Intelligence (AI) domains to assist the automated content analysis. A vast majority of content on the web is in either plain or rich textual form \cite{}. Recently, Apache Tika added support for information extraction by the application of Natural Language Processing\cite{}. The newer version of Tika can be configured to recognize names in the content where it delegates the task to some of the popular Natural Language Processing toolkits. It supports various Named Entity Recognition(NER) techniques from toolkits like Stanford CoreNLP\cite{}, Apache OpenNLP\cite{}, MIT Lincoln Lab's MITIE \cite{}. Named Entity Recognition tasks from the text helps to briefly analyze the topics of the text. However, considering the fact that the image data on the web has the next biggest share, we historically lacked tools for automatically analyzing the graphical content without making much errors. Thanks to the recent advancements in the domains of computer vision, especially in object recognition, we have systems which have nearer or better performance than average human beings.
+Apache Tika\cite{mattmann2011tika} is a Free and Open Source (FOSS) content detection framework that can detect the patterns in raw content and determine its MIME and file type. It also has a rich pool of parsers, where its auto detection features can selectively apply sophisticated parsers based on the content type. However, reading or parsing content is a low level task compared to the high level task of interpreting the semantics of the content. In this paper we describe some useful enrichments to the framework that integrates recent innovations in the Artificial Intelligence (AI) domains to assist the automated content analysis. A vast majority of content on the web is in either plain or rich textual form \cite{}. Recently, Apache Tika added support for information extraction by the application of Natural Language Processing\cite{}. The newer version of Tika can be configured to recognize names in the content where it delegates the task to some of the popular Natural Language Processing toolkits. It supports various Named Entity Recognition(NER) techniques from toolkits like Stanford CoreNLP\cite{}, Apache OpenNLP\cite{}, MIT Lincoln Lab's MITIE \cite{}. Named Entity Recognition tasks from the text helps to briefly analyze the topics of the text. However, considering the fact that the image data on the web has the next biggest share, we historically lacked tools for automatically analyzing the graphical content without making much errors. 
 
 %% TODO: Introduce the task of image/object recognition
-Object recognition is a standard problem in computer vision which deals with the recognition of objects of interests in the graphical data. In the context of images it is often called as image recognition. Historically image recognition was a challenging task due to the fact that the accuracy of the recognized objects were much lower than average Human performance. However, due to the recent come back of deep neural networks and availability of larger datasets and faster computing resources, the performance crossed the human performance. 
+Object recognition is a standard problem in computer vision which deals with the recognition of objects of interest in the graphical data. In the context of images it is often called as image recognition. Historically image recognition was a challenging task and its accuracy of the recognized objects were much lower than average Human performance. However, due to the recent advancements in deep neural networks and availability of larger datasets with faster computing resources, we now have systems which have nearer or better performance than average human beings.
+
 %% TODO: introduce Image net
+
 %% TODO: introduce Tensorflow
 
 %% TODO: Describe the bigger challenge & Summarize how all these fit together
@@ -108,17 +107,23 @@ As of October 2016, the most popular deep learning frameworks are focused toward
 The organization of the rest of this paper is as follows: Section \ref{sec:memex} provides an overview of the analysis task in which we describe data collection, analysis. Next, Section \ref{sec:obj-rec} describes the object recognition process and recent success with deep learning and the current state of the art model. Section \ref{sec:integration} covers various integration techniques we tried and the internal workings of it. Section \ref{sec:evaluation} provides pros and cons of each integration methods.
 
 \section{CONTENT ANALYSIS IN MEMEX PROGRAM} \label{sec:memex}
-
+This section discusses the background and motivations of DARPA Memex program and its datasets. The current commercial web search engines provides a generalized search interface to all users~\cite{}. However, in the context of cyber security, the commercial search engines miss resources from the deep and dark web which are essential for law keeping agencies. The goal of Memex program is to develop softwares that can quickly and thoroughly organize and search subsets of information relevant to the individual interests. The first two interests were in the domains of human trafficking and illegal weapon sale.
 \subsection{Data Collection}
 \label{sec:memex-datacollection}
+Several web crawlers were used to discover and retrieve information from the websites. 
+Along with the general purpose web crawlers, there were specialized crawler for the retrieval of dark data using TOR protocol \cite{} and also specialized in retrieval of dynamic AJAX content guarded by login forms. The fetched data were cached within the system for analysis due to the ephemeral nature of the content at the sources. 
 
 \subsection{Memex Dataset} \label{sec:memex-dataset}
+The dataset used in our experiment was a subset of memex dataset in public domain. It contained 7.2 million documents in the illegal weapon sales domain in which 1.4 documents were images. We had analyzed the textual documents and the named entities separately in a different experiment using named entity recognition models and extractors for people, location, organization, weapon-name and weapon-types. In this experiment we were interested in labeling images by classifying them into various classes. Usually web crawlers fetches all resources linked in the web pages and hences classification was an important pre-processing to remove noise for the later analysis.
 
 \subsection{Visualization} \label{sec:memex-visualization}
+A web interface was developed to browse the classified images in the index. //TODO: should we write about kyle's work here or not?
 
 \section{OBJECT RECOGNITION} \label{sec:obj-rec}
-\subsection{ImageNet} \label{sec:imagenet}
+
 \subsection{Deep Learning } \label{sec:deeplearning-imagenet}
+\subsection{ImageNet} \label{sec:imagenet}
+
 \subsection{Inception Network } \label{sec:inceptionnet}
 
 \section{INTEGRATION} \label{sec:integration}
@@ -129,7 +134,7 @@ The following methods of integration were investigated in the order of listing:
 \begin{itemize}
 \item Command Line Invocation
 \item Java Native Interface
-\item Remote Procedure Call
+\item gRPC Remote Procedure Calls
 \item Representational State Transfer API 
 \end{itemize}
 %% TODO: Enumerate the methods, put figures, mention pros and cons
@@ -152,8 +157,8 @@ The next approach we investigated was the Java Native Interface (JNI). JNI is th
 \includegraphics[scale=0.40]{tika-tflow-jni-design}
 
 %% 3. RPC
-\subsection{Remote Procedure Call (RPC)} \label{sec:int-rpc}
-The original developers of Tensorflow framework recommended the use of Remote Procedure Call (RPC) based integration for the production systems\cite{}. RPC is a client-server based architecture in which caller acts as a RPC client and callee serves as a server in a different address space. In our case, we embedded RPC client in Tika JVM and exported Tensorflow image recognition capabilities as remote procedures via RPC service. We used Tensorflow Serving\cite{} which was a GRPC\cite{} server implemented in C++ and also created a docker container to host it.
+\subsection{gRPC Remote Procedure Calls (gRPC)} \label{sec:int-rpc}
+The original developers of Tensorflow framework recommended the use of gRPC based integration for the production systems\cite{}. gRPC is a client-server based architecture in which caller acts as a RPC client and callee serves as a server in a different address space. Unlike traditional RPC frameworks, gRPC is a high performance, CPU and bandwidth efficient transport on top of HTTP/2 that supports full duplex streaming\cite{}. In our case, we embedded gRPC client in Tika JVM and exported Tensorflow image recognition capabilities as remote procedures via gRPC service. We used Tensorflow Serving\cite{}, a gRPC\cite{} server implemented in C++, and also created a docker container to host it.
 
 \includegraphics[scale=0.40]{tika-tflow-RPC-design}
 
@@ -236,7 +241,7 @@ The cons of this method are:
 \end{itemize}
 
 %% 3. RPC
-\subsection{Remote procedure Call (RPC)} \label{sec:eval-rpc}
+\subsection{gRPC Remote procedure Call (gRPC)} \label{sec:eval-rpc}
 
 The pros of this method are 
 \begin{itemize}
@@ -246,8 +251,7 @@ The pros of this method are
 
 The cons of this method are:
 \begin{itemize}
-  \item An RPC client adds additional dependencies to the already existing Java Framework.
-  \item RPC client version should be in sync with the RPC server. The RPC client may depend on specific versions of transitive dependencies which introduce conflicts with existing functionality.
+  \item The gRPC client may depend on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
 \end{itemize}
 
 %% 4. REST
@@ -258,18 +262,17 @@ The average REST API call was 260 milliseconds when the client and server were i
 The pros of this method are 
 \begin{itemize}
 \item An efficient and popular way for integrating heterogeneous systems.
-\item The REST API is language agnostic.
+\item The technology and practices are popular among developer community.
 \item The underlying HTTP is stable and well documented.
 \end{itemize}
 
 The cons of this method are 
 \begin{itemize}
-\item The performance is slightly lower than RPC due to the additional overhead of HTTP.
-\item Slightly higher network io due to additional metadata introduced by HTTP to the packets.
+\item The performance is slightly lower than gRPC.
+\item Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
 \end{itemize}
 
 \section{CONCLUSIONS}
-\subsection{Winner: REST API}
 %% TODO: link to Wiki page 
 
 \section*{ACKNOWLEDGMENT}
