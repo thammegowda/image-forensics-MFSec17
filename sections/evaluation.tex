@@ -1,0 +1,64 @@
+\section {EVALUATION} \label{sec:evaluation}
+\subsection{Command Line Invocation (CLI)} \label{sec:eval-cli}
+The average time taken to recognize image in this method was 6 seconds.
+
+The pros of Command Line Interface:
+\begin{itemize}
+\item Easy to develop and test
+\item Easy to install the requirements
+\item Isolation of dependencies / concerns
+\end{itemize}
+
+The cons of this technique:
+\begin{itemize}
+\item The image data is shared via secondary storage which puts additional load on the  secondary storage.
+\item An independent process is created and destroyed for every parse call.
+\item The ImageNet model is loaded and unloaded for every parse call due to ephemeral nature of processes. The InceptionV3 model used in our experiments is approximately 200MB in size, thus 200MB of additional IO for each parse call.
+\end{itemize}
+
+%% 2. JNI
+\subsection{Java Native Interface (JNI)} \label{sec:eval-jni}
+
+The pros of this method are
+\begin{itemize}
+\item The most efficient utilization of resources
+\item No external input-output required as the entire task runs in a single process.
+\end{itemize}
+
+The cons of this method are:
+\begin{itemize}
+  \item The JNI glue code has to be compiled and packaged for all the platforms.
+  \item Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}.
+\end{itemize}
+
+%% 3. RPC
+\subsection{gRPC Remote procedure Call (gRPC)} \label{sec:eval-rpc}
+
+The pros of this method are
+\begin{itemize}
+\item An efficient way for integrating heterogeneous systems.
+\item The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization.
+\end{itemize}
+
+The cons of this method are:
+\begin{itemize}
+  \item The gRPC client may depend on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
+\end{itemize}
+
+%% 4. REST
+\subsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:eval-rest}
+
+The average REST API call was 260 milliseconds when the client and server were in the same host (i.e., the connection via loopback interface).
+
+The pros of this method are
+\begin{itemize}
+\item An efficient and popular way for integrating heterogeneous systems.
+\item The technology and practices are popular among developer community.
+\item The underlying HTTP is stable and well documented.
+\end{itemize}
+
+The cons of this method are
+\begin{itemize}
+\item The performance is slightly lower than gRPC.
+\item Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
+\end{itemize}

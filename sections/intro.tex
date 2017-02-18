@@ -1,0 +1,22 @@
+\section{INTRODUCTION}
+%% TODO: introduce Content Analysis and role in DARPA MEMEX
+The objectives of Content Analysis are interpreting its meaning and establishing relationships \cite{}. Content analysis spreads across multimedia types like text in plain as well as rich formats, audio, image and video. //TODO: more here
+
+
+Defense Advanced Research Projects Agency (DARPA) started a program called MEMEX\cite{} to help law keeping agencies to monitor and counteract the illegal activities on the web. The first challenge in such systems is to retrieve dark and deep content from the World Wide Web. Understanding the meaning and relationships are essential for performing various activities like filtering, classification, and ranking the severity etc. While humans can only efficiently and precisely analyze a small set of datasets, considering the scale of the dark and deep Web, automating the process is inherent requirement for its mission.
+
+%% TODO: Introduce Tika and content analysis
+Apache Tika\cite{mattmann2011tika} is a Free and Open Source (FOSS) content detection framework that can detect the patterns in raw content and determine its MIME and file type. It also has a rich pool of parsers, where its auto detection features can selectively apply sophisticated parsers based on the content type. However, reading or parsing content is a low level task compared to the high level task of interpreting the semantics of the content. In this paper we describe some useful enrichments to the framework that integrates recent innovations in the Artificial Intelligence (AI) domains to assist the automated content analysis. A vast majority of content on the web is in either plain or rich textual form \cite{}. Recently, Apache Tika added support for information extraction by the application of Natural Language Processing\cite{}. The newer version of Tika can be configured to recognize names in the content where it delegates the task to some of the popular Natural Language Processing toolkits. It supports various Named Entity Recognition(NER) techniques from toolkits like Stanford CoreNLP\cite{}, Apache OpenNLP\cite{}, MIT Lincoln Lab's MITIE \cite{}. Named Entity Recognition tasks from the text helps to briefly analyze the topics of the text. However, considering the fact that the image data on the web has the next biggest share, we historically lacked tools for automatically analyzing the graphical content without making much errors.
+
+%% TODO: Introduce the task of image/object recognition
+Object recognition is a standard problem in computer vision which deals with the recognition of objects of interest in the graphical data. In the context of images it is often called as image recognition. Historically image recognition was a challenging task and its accuracy of the recognized objects were much lower than average Human performance. However, due to the recent advancements in deep neural networks and availability of larger datasets with faster computing resources, we now have systems which have nearer or better performance than average human beings.
+
+%% TODO: introduce Image net
+
+%% TODO: introduce Tensorflow
+
+%% TODO: Describe the bigger challenge & Summarize how all these fit together
+As of October 2016, the most popular deep learning frameworks are focused towards performance gain from native code and GPU optimization for fast matrix manipulations\cite{}. In our case, Tensorflow doesnot provide out of the box bindings to Java based frameworks. Apache Tika is primarily written in Java and thus integrating with Tensorflow is not straight forward like any other JVM compatible libraries. In this paper we explore various methods of integration and their pros and cons.
+
+%% brief overview of rest of the paper
+The organization of the rest of this paper is as follows: Section \ref{sec:memex} provides an overview of the analysis task in which we describe data collection, analysis. Next, Section \ref{sec:obj-rec} describes the object recognition process and recent success with deep learning and the current state of the art model. Section \ref{sec:integration} covers various integration techniques we tried and the internal workings of it. Section \ref{sec:evaluation} provides pros and cons of each integration methods.

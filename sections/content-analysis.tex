@@ -1,0 +1,12 @@
+\section{CONTENT ANALYSIS IN MEMEX PROGRAM} \label{sec:memex}
+This section discusses the background and motivations of DARPA Memex program and its datasets. The current commercial web search engines provides a generalized search interface to all users~\cite{}. However, in the context of cyber security, the commercial search engines miss resources from the deep and dark web which are essential for law keeping agencies. The goal of Memex program is to develop softwares that can quickly and thoroughly organize and search subsets of information relevant to the individual interests. The first two interests were in the domains of human trafficking and illegal weapon sale.
+\subsection{Data Collection}
+\label{sec:memex-datacollection}
+Several web crawlers were used to discover and retrieve information from the websites.
+Along with the general purpose web crawlers, there were specialized crawler for the retrieval of dark data using TOR protocol \cite{} and also specialized in retrieval of dynamic AJAX content guarded by login forms. The fetched data were cached within the system for analysis due to the ephemeral nature of the content at the sources.
+
+\subsection{Memex Dataset} \label{sec:memex-dataset}
+The dataset used in our experiment was a subset of memex dataset in public domain. It contained 7.2 million documents in the illegal weapon sales domain in which 1.4 documents were images. We had analyzed the textual documents and the named entities separately in a different experiment using named entity recognition models and extractors for people, location, organization, weapon-name and weapon-types. In this experiment we were interested in labeling images by classifying them into various classes. Usually web crawlers fetches all resources linked in the web pages and hences classification was an important pre-processing to remove noise for the later analysis.
+
+\subsection{Visualization} \label{sec:memex-visualization}
+A web interface was developed to browse the classified images in the index. //TODO: should we write about kyle's work here or not?
