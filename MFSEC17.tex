@@ -28,6 +28,8 @@
 \graphicspath{{./images/}}
 \usepackage{listings}
 \usepackage{url}
+\usepackage{tabularx}
+\usepackage{booktabs}
 
 %%%%%%%%% JSON BEGIN %%%%%
 \usepackage{xcolor}
@@ -69,34 +71,17 @@
 
 
 \begin{document}
-\title{Multimedia Forensics using Tensorfow Image Recognition and Apache Tika }
-\titlenote{Apache Tika is a open source project hosted on Apache Software Foundation and Tensorflow is another opensource framework for deeplearning}
-\subtitle{Memex program}
-\subtitlenote{Credits to DARPA Memex}
-
-
-\author{Thamme Gowda}
-\authornote{~}
-\orcid{0000-0001-5422-8674}
-\affiliation{%
-  \institution{University of Southern California}
-  %\streetaddress{P.O. Box 1212}
-  \city{Los Angeles} 
-  \state{CA} 
-  \postcode{90007}
-}
+\title[Automatic Large Scale Image Forensics]{An Approach for Automatic and Large Scale Image Forensics and Search}
+\author{Thamme Gowda\textsuperscript{1}, Kyle Hundman\textsuperscript{2}, Chris A. Mattmann\textsuperscript{1,2}}
 \email{thammegowda.n@usc.edu}
+\affiliation{\begin{tabular}{*{2}{>{\centering}p{.45\textwidth}}}\textsuperscript{1}Computer Science Department & \textsuperscript{2}Jet Propulsion Laboratory \tabularnewline University of Southern California & California Institute of Technology \tabularnewline Los Angeles, CA 90089 USA & Pasadena, CA 91109 USA \end{tabular}}
 
-\author{Chris A. Mattmann}
-\authornote{~}
-\affiliation{%
-  \institution{University of Southern California}
-%  \streetaddress{P.O. Box 1212}
-  \city{Los Angeles} 
-  \state{CA} 
-  \postcode{90007}
-}
-\email{mattmann@usc.edu}
+% The default list of authors is too long for headers}
+\renewcommand{\shortauthors}{T. Gowda, K. Hundman, C. Mattmann}
+
+%\titlenote{Apache Tika is a open source project hosted on Apache Software Foundation and Tensorflow is another opensource framework for deeplearning}
+%\subtitle{Memex program}
+%\%subtitlenote{Credits to DARPA Memex}
 
 
 % The default list of authors is too long for headers}
