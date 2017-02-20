@@ -1,5 +1,6 @@
 \section {EVALUATION} \label{sec:evaluation}
-\subsection{Command Line Invocation (CLI)} \label{sec:eval-cli}
+\subsection{Integration Techniques}
+\subsubsection{Command Line Invocation (CLI)} \label{sec:eval-cli}
 The average time taken to recognize image in this method was 6 seconds.
 
 The pros of Command Line Interface:
@@ -17,7 +18,7 @@ The cons of this technique:
 \end{itemize}
 
 %% 2. JNI
-\subsection{Java Native Interface (JNI)} \label{sec:eval-jni}
+\subsubsection{Java Native Interface (JNI)} \label{sec:eval-jni}
 
 The pros of this method are
 \begin{itemize}
@@ -32,7 +33,7 @@ The cons of this method are:
 \end{itemize}
 
 %% 3. RPC
-\subsection{gRPC Remote procedure Call (gRPC)} \label{sec:eval-rpc}
+\subsubsection{gRPC Remote procedure Call (gRPC)} \label{sec:eval-rpc}
 
 The pros of this method are
 \begin{itemize}
@@ -46,7 +47,7 @@ The cons of this method are:
 \end{itemize}
 
 %% 4. REST
-\subsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:eval-rest}
+\subsubsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:eval-rest}
 
 The average REST API call was 260 milliseconds when the client and server were in the same host (i.e., the connection via loopback interface).
 
@@ -62,3 +63,12 @@ The cons of this method are
 \item The performance is slightly lower than gRPC.
 \item Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
 \end{itemize}
+
+\subsection{Analysis of results}
+
+\begin{figure}[h]
+	\includegraphics[scale=0.5]{top10classes}
+	\caption{Top 10 image classes found in the dataset}
+	\label{fig:top10ImgClass}
+\end{figure}
+The 10 most frequently occurred image types and their frequencies are shown in the Figure \ref{fig:top10ImgClass}. Since the crawlers were configured to focus on retrieving the web pages along with its linked images related to weapons, the top classes in our dataset were found to be `revolver', and `riffle'.
