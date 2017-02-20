@@ -7,3 +7,4 @@
 *.aux
 *.bbl
 *.blg
+.ipynb_checkpoints
