@@ -12,7 +12,7 @@ The pros of Command Line Interface:
 
 The cons of this technique:
 \begin{itemize}
-\item The image data is shared via secondary storage which puts additional load on the  secondary storage.
+\item The image data is shared via secondary storage which puts additional load on the secondary storage.
 \item An independent process is created and destroyed for every parse call.
 \item The ImageNet model is loaded and unloaded for every parse call due to ephemeral nature of processes. The InceptionV3 model used in our experiments is approximately 200MB in size, thus 200MB of additional IO for each parse call.
 \end{itemize}
@@ -67,7 +67,7 @@ The cons of this method are
 \subsection{Analysis of results}
 
 \begin{figure}[h]
-	\includegraphics[scale=0.5]{top10classes}
+	\includegraphics[width=\columnwidth]{top10classes}
 	\caption{Top 10 image classes found in the dataset}
 	\label{fig:top10ImgClass}
 \end{figure}
