@@ -47,31 +47,32 @@ Representation State Transfer (REST) is a popular client-server architecture par
 We crated REST API for tensorflow image recognition using python Flask\cite{}. The Flask based HTTP service registered a TCP port and offered HTTP API end points as shown in Figure \ref{fig:tf-tika-integration} (d).
 An API end point accepted HTTP POST requests with image data in the multi-part-form body. This service loaded the InceptionV3Net \cite{SzegedyVISW15} model during the initialization phase and held the model in memory for reusing it during the future HTTP Requests.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\columnwidth]{military_dog}
-    \caption{Military Person with a German Shepherd Dog \newline Courtesy: Wikimedia Commons}
-    \label{fig:military-dog}
-\end{figure}
-The REST API, upon recognizing the objects in the image \ref{fig:military-dog}, returned the response in the JSON format with the following structure:
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\columnwidth]{military_dog}
+%     \caption{Military Person with a German Shepherd Dog \newline Courtesy: Wikimedia Commons}
+%     \label{fig:military-dog}
+% \end{figure}
 
-\begin{lstlisting}[language=json, label=code:json-output,
-	frame=single, xleftmargin=5.0pt, xrightmargin=5.0pt,
-    caption=JSON Response from REST API]
-{
-  "confidence": [ 0.362026, 0.130613],
-  "classnames": [
-    "German shepherd, alsatian",
-    "military uniform"
-  ],
-  "classids": [211, 866 ],
-  "time": {
-    "read": 1,
-    "units": "ms",
-    "classification": 257
-  }
-}
-\end{lstlisting}
+% The REST API, upon recognizing the objects in the image \ref{fig:military-dog}, returned the response in the JSON format with the following structure:
+
+% \begin{lstlisting}[language=json, label=code:json-output,
+% 	frame=single, xleftmargin=5.0pt, xrightmargin=5.0pt,
+%     caption=JSON Response from REST API]
+% {
+%   "confidence": [ 0.362026, 0.130613],
+%   "classnames": [
+%     "German shepherd, alsatian",
+%     "military uniform"
+%   ],
+%   "classids": [211, 866 ],
+%   "time": {
+%     "read": 1,
+%     "units": "ms",
+%     "classification": 257
+%   }
+% }
+% \end{lstlisting}
 
 On the other side of the system, we implemented the class \texttt{TensorflowRESTRecogniser} which used HTTP Client to communicate with REST API. This implementation of \texttt{ObjectRecogniser} converted the image data to HTTP POST request with multipart form data and sent it to REST API. It parsed the JSON response to retrieve the object names, ids and confidence scores. We also created a docker specification for bootstrapping the tensorflow image recognition REST API for semi automated deployment of the system.
 
