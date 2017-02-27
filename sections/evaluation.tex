@@ -24,45 +24,56 @@ The pros and cons of all the integration techniques described in Section \ref{se
 	\centering
 	\begin{tabularx}{\textwidth}{
 			|p{\dimexpr.08\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
-			|p{\dimexpr.08\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
-			|p{\dimexpr.42\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 2
-			|p{\dimexpr.42\linewidth-2\tabcolsep-1.3333\arrayrulewidth}|% column 3
+			|p{\dimexpr.06\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
+			|p{\dimexpr.43\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 2
+			|p{\dimexpr.43\linewidth-2\tabcolsep-1.3333\arrayrulewidth}|% column 3
 		} \hline
 
 		\textbf{Method} & \textbf{Time} & \textbf{Pros} & \textbf{Cons} \\ \hline
 
 		\textbf{CLI} 
 		& 3s&
+        \rule{0pt}{2.5ex}
 		\tabitem Easy to develop and test \newline
 		\tabitem Easy to install dependencies \newline
 		\tabitem Isolation of dependencies and concerns
-		& \tabitem Additional load on secondary storage to share image data. \newline
+		& 
+        \rule{0pt}{2.5ex}
+        \tabitem Additional load on secondary storage to share image data. \newline
 		\tabitem An extra process is created and destroyed for each call. \newline
 		\tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
 		\\ \hline
 
 		\textbf{JNI} 
 		& N/A
+        \rule{0pt}{2.5ex}
 		& \tabitem The most efficient utilization of resources. \newline 
 		\tabitem No external IO required since the system is monolithic.
 		& 
+        \rule{0pt}{2.5ex}
 		\tabitem The JNI native glue code has to be produced for all the platforms. \newline
 		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}.
 		\\ \hline
 
 		\textbf{gRPC}
 		& 598ms
+        \rule{0pt}{2.5ex}
 		& \tabitem An efficient way for integrating heterogeneous systems. \newline 
 		\tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization. 
-		&  \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
+		& 
+        \rule{0pt}{2.5ex}  
+        \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
 		\\ \hline
 		\textbf{REST API}
 		& 253ms
 		&
+        \rule{0pt}{2.5ex}
 		\tabitem An efficient way for integrating heterogeneous systems. \newline 
 		\tabitem The technology and practices are popular among developers. \newline 
 		\tabitem The underlying HTTP is stable and well documented.
-		& \tabitem The bandwidth consumption is higher than gRPC due to the extra HTTP headers. \newline
+		& 
+        \rule{0pt}{2.5ex}
+        \tabitem The bandwidth consumption is higher than gRPC due to the extra HTTP headers. \newline
 		\\ \hline
 	\end{tabularx}
 \caption{Brief comparison of integration techniques. \textnormal{The numbers in the `Time' column are the time taken per image on a ubuntu 14.04 LTS docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for test images of size 1024x768 pixels.}}
