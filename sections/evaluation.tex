@@ -6,15 +6,15 @@
 	\caption{Top 10 image classes found in the dataset}
 	\label{fig:top10ImgClass}
 \end{figure}
-The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. Inception-V3 model was trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
-The 10 most frequently occurred classes and their frequencies are shown in the Figure \ref{fig:top10ImgClass}. Since the crawlers were focused to retrieve the web pages and linked images that are related to weapons classifieds, the top classes in our dataset were found to be `revolver', and `riffle'.
+The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. The Inception-V3 model has trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
+The 10 most frequently occurred classes and their frequencies are shown in the Figure \ref{fig:top10ImgClass}. Since the crawlers were focused on retrieving the web pages and linked images that are related to weapons classifieds, the top classes in our dataset were found to be `revolver', and `rifle'
 
 \subsection{Manual cross validation of results}
-We cross validated the predictions by using a subset of human labeled images. The results are shown in Figure \ref{fig:uk-hack-eval}.  
+We cross-validated the predictions by using a subset of human-labeled images. The results are shown in Figure \ref{fig:uk-hack-eval}. 
 %//TODO: Describe more if space permits
 \begin{figure}[h]
 	\includegraphics[width=\columnwidth]{uk-hack-evaluation2}
-	\caption{Manual cross validation of results for the two weapon types : `revolver' and `rifle'}
+	\caption{Manual cross validation of results for the two weapon types: `revolver' and `rifle'}
 	\label{fig:uk-hack-eval}
 \end{figure}
 
@@ -23,46 +23,49 @@ The pros and cons of all the integration techniques described in Section \ref{se
 \begin{table*}[bt]
 	\centering
 	\begin{tabularx}{\textwidth}{
-			|p{\dimexpr.10\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
-			|p{\dimexpr.45\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 2
-			|p{\dimexpr.45\linewidth-2\tabcolsep-1.3333\arrayrulewidth}|% column 3
+			|p{\dimexpr.08\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
+			|p{\dimexpr.08\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
+			|p{\dimexpr.42\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 2
+			|p{\dimexpr.42\linewidth-2\tabcolsep-1.3333\arrayrulewidth}|% column 3
 		} \hline
-		\textbf{Method} & \textbf{Pros} & \textbf{Cons} \\ \hline
-		CLI 
+
+		\textbf{Method} & \textbf{Time} & \textbf{Pros} & \textbf{Cons} \\ \hline
+
+		\textbf{CLI} 
+		& 3s
 		& \tabitem Easy to develop and test \newline
 		\tabitem Easy to install dependencies \newline
 		\tabitem Isolation of dependencies and concerns
-		& 
-		\tabitem Additional load on secondary storage to share image data. \newline
+		& \tabitem Additional load on secondary storage to share image data. \newline
 		\tabitem An extra process is created and destroyed for each call. \newline
 		\tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
 		\\ \hline
-		JNI
-		& 
-		\tabitem The most efficient utilization of resources. \newline 
+
+		\textbf{JNI} 
+		& N/A
+		& \tabitem The most efficient utilization of resources. \newline 
 		\tabitem No external IO required since the system is monolithic.
 		& 
 		\tabitem The JNI native glue code has to be produced for all the platforms. \newline
-		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}.
+		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}.
 		\\ \hline
-		gRPC
-		&
-		\tabitem An efficient way for integrating heterogeneous systems. \newline 
-		\tabitem The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization. 
-		& 
-		\tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
+
+		\textbf{gRPC}
+		& 598ms
+		& \tabitem An efficient way for integrating heterogeneous systems. \newline 
+		\tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization. 
+		&  \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
 		\\ \hline
-		REST API
+		\textbf{REST API}
+		& 253ms
 		&
 		\tabitem An efficient way for integrating heterogeneous systems. \newline 
 		\tabitem The technology and practices are popular among developers. \newline 
 		\tabitem The underlying HTTP is stable and well documented.
-		&
-		\tabitem The performance is slightly lower than gRPC. \newline
-		\tabitem Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
+		& \tabitem The bandwidth consumption is higher than gRPC due to the extra HTTP headers. \newline
 		\\ \hline
 	\end{tabularx}
-\caption{Brief comparison of integration techniques}
+\caption{Brief comparison of integration techniques. \textnormal{The numbers in the `Time' column are the time taken per image on a ubuntu 14.04 LTS docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for images of size 1024x768 pixels.}}
 \label{tab:int-technique}
 \end{table*}
 
