@@ -2,8 +2,8 @@
 
 \subsection{Analysis of results}
 \begin{figure}[h]
-	\includegraphics[width=\columnwidth]{top10classes}
-	\caption{Top 10 image classes found in the dataset}
+	\includegraphics[width=\columnwidth]{top10classes2}
+	\caption{Top 10 image classes found in the image dataset. As labeled are generated for weapon images, we can train a more targeted domain-specific classifier.}
 	\label{fig:top10ImgClass}
 \end{figure}
 The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. The Inception-V3 model has trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
@@ -13,8 +13,8 @@ The 10 most frequently occurred classes and their frequencies are shown in the F
 We cross-validated the predictions by using a subset of human-labeled images. The results are shown in Figure \ref{fig:uk-hack-eval}. 
 %//TODO: Describe more if space permits
 \begin{figure}[h]
-	\includegraphics[width=\columnwidth]{uk-hack-evaluation2}
-	\caption{Manual cross validation of results for the two weapon types: `revolver' and `rifle'}
+	\includegraphics[width=\columnwidth]{uk-hack-evaluation3}
+	\caption{Manual cross validation of results for the two weapon types: `revolver' and `rifle.' For all images, either rifle or revolver should have been the top object class identified. There is a significant portion of images where the weapon objects were identified but weren't the primary class.}
 	\label{fig:uk-hack-eval}
 \end{figure}
 
