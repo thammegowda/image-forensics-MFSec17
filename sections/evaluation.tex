@@ -1,20 +1,88 @@
 \section {EVALUATION} \label{sec:evaluation}
-\subsection{Integration Techniques}
+
+\subsection{Analysis of results}
+\begin{figure}[h]
+	\includegraphics[width=\columnwidth]{top10classes}
+	\caption{Top 10 image classes found in the dataset}
+	\label{fig:top10ImgClass}
+\end{figure}
+The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. Inception-V3 model was trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
+The 10 most frequently occurred classes and their frequencies are shown in the Figure \ref{fig:top10ImgClass}. Since the crawlers were focused to retrieve the web pages and linked images that are related to weapons classifieds, the top classes in our dataset were found to be `revolver', and `riffle'.
+
+\subsection{Manual cross validation of results}
+We cross validated the predictions by using a subset of human labeled images. The results are shown in Figure \ref{fig:uk-hack-eval}.  
+%//TODO: Describe more if space permits
+\begin{figure}[h]
+	\includegraphics[width=\columnwidth]{uk-hack-evaluation2}
+	\caption{Manual cross validation of results for the two weapon types : `revolver' and `rifle'}
+	\label{fig:uk-hack-eval}
+\end{figure}
+
+\subsection{Integration techniques}
+The pros and cons of all the integration techniques described in Section \ref{sec:integration} are shown in Table \ref{tab:int-technique}.
+\begin{table*}[bt]
+	\centering
+	\begin{tabularx}{\textwidth}{
+			|p{\dimexpr.10\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
+			|p{\dimexpr.45\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 2
+			|p{\dimexpr.45\linewidth-2\tabcolsep-1.3333\arrayrulewidth}|% column 3
+		} \hline
+		\textbf{Method} & \textbf{Pros} & \textbf{Cons} \\ \hline
+		CLI 
+		& \tabitem Easy to develop and test \newline
+		\tabitem Easy to install dependencies \newline
+		\tabitem Isolation of dependencies and concerns
+		& 
+		\tabitem Additional load on secondary storage to share image data. \newline
+		\tabitem An extra process is created and destroyed for each call. \newline
+		\tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
+		\\ \hline
+		JNI
+		& 
+		\tabitem The most efficient utilization of resources. \newline 
+		\tabitem No external IO required since the system is monolithic.
+		& 
+		\tabitem The JNI native glue code has to be produced for all the platforms. \newline
+		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}.
+		\\ \hline
+		gRPC
+		&
+		\tabitem An efficient way for integrating heterogeneous systems. \newline 
+		\tabitem The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization. 
+		& 
+		\tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
+		\\ \hline
+		REST API
+		&
+		\tabitem An efficient way for integrating heterogeneous systems. \newline 
+		\tabitem The technology and practices are popular among developers. \newline 
+		\tabitem The underlying HTTP is stable and well documented.
+		&
+		\tabitem The performance is slightly lower than gRPC. \newline
+		\tabitem Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
+		\\ \hline
+	\end{tabularx}
+\caption{Brief comparison of integration techniques}
+\label{tab:int-technique}
+\end{table*}
+
+%%%%%%%% COMMENT BEGIN
+\iffalse
 \subsubsection{Command Line Invocation (CLI)} \label{sec:eval-cli}
 The average time taken to recognize image in this method was 6 seconds.
 
 The pros of Command Line Interface:
 \begin{itemize}
-\item Easy to develop and test
-\item Easy to install the requirements
-\item Isolation of dependencies / concerns
+	\item Easy to develop and test
+	\item Easy to install the requirements
+	\item Isolation of dependencies / concerns
 \end{itemize}
 
 The cons of this technique:
 \begin{itemize}
-\item The image data is shared via secondary storage which puts additional load on the secondary storage.
-\item An independent process is created and destroyed for every parse call.
-\item The ImageNet model is loaded and unloaded for every parse call due to ephemeral nature of processes. The InceptionV3 model used in our experiments is approximately 200MB in size, thus 200MB of additional IO for each parse call.
+	\item The image data is shared via secondary storage which puts additional load on the secondary storage.
+	\item An independent process is created and destroyed for every parse call.
+	\item The ImageNet model is loaded and unloaded for every parse call due to ephemeral nature of processes. The InceptionV3 model used in our experiments is approximately 200MB in size, thus 200MB of additional IO for each parse call.
 \end{itemize}
 
 %% 2. JNI
@@ -22,14 +90,14 @@ The cons of this technique:
 
 The pros of this method are
 \begin{itemize}
-\item The most efficient utilization of resources
-\item No external input-output required as the entire task runs in a single process.
+	\item The most efficient utilization of resources
+	\item No external input-output required as the entire task runs in a single process.
 \end{itemize}
 
 The cons of this method are:
 \begin{itemize}
-  \item The JNI glue code has to be compiled and packaged for all the platforms.
-  \item Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}.
+	\item The JNI glue code has to be compiled and packaged for all the platforms.
+	\item Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}.
 \end{itemize}
 
 %% 3. RPC
@@ -37,13 +105,13 @@ The cons of this method are:
 
 The pros of this method are
 \begin{itemize}
-\item An efficient way for integrating heterogeneous systems.
-\item The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization.
+	\item An efficient way for integrating heterogeneous systems.
+	\item The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization.
 \end{itemize}
 
 The cons of this method are:
 \begin{itemize}
-  \item The gRPC client may depend on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
+	\item The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
 \end{itemize}
 
 %% 4. REST
@@ -53,31 +121,14 @@ The average REST API call was 260 milliseconds when the client and server were i
 
 The pros of this method are
 \begin{itemize}
-\item An efficient and popular way for integrating heterogeneous systems.
-\item The technology and practices are popular among developer community.
-\item The underlying HTTP is stable and well documented.
+	\item An efficient and popular way for integrating heterogeneous systems.
+	\item The technology and practices are popular among developer community.
+	\item The underlying HTTP is stable and well documented.
 \end{itemize}
 
 The cons of this method are
 \begin{itemize}
-\item The performance is slightly lower than gRPC.
-\item Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
+	\item The performance is slightly lower than gRPC.
+	\item Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
 \end{itemize}
-
-\subsection{Analysis of results}
-
-\begin{figure}[h]
-	\includegraphics[width=\columnwidth]{top10classes}
-	\caption{Top 10 image classes found in the dataset}
-	\label{fig:top10ImgClass}
-\end{figure}
-The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. Inception-V3 model was trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
-The 10 most frequently occurred classes and their frequencies are shown in the Figure \ref{fig:top10ImgClass}. Since the crawlers were focused to retrieve the web pages and linked images that are related to weapons classifieds, the top classes in our dataset were found to be `revolver', and `riffle'.
-
-\subsection{Manual Cross validation of results}
-//TODO: write about Figure \ref{fig:uk-hack-eval}
-\begin{figure}[h]
-	\includegraphics[width=\columnwidth]{uk-hack-evaluation2}
-	\caption{Manual cross validation of results for two selected weapon types}
-	\label{fig:uk-hack-eval}
-\end{figure}
+\fi  %% COMMENT END
