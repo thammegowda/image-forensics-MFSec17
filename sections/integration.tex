@@ -2,7 +2,9 @@
 We defined an interface named \texttt{ObjectRecogniser} to facilitate multiple implementation of object recognizer. The image recognition framework was developed for the \texttt{ObjectRecogniser} contract. The main part of this contract is a function that accepts image data and returns list of \texttt{RecognisedObject}s
 
 %% TODO: Summarize the challenges
-%% TODO: List the available methods
+
+\iffalse
+%% List the available methods
 The following methods of integration were investigated in the order of listing:
 \begin{itemize}
 \item Command Line Invocation
@@ -10,6 +12,7 @@ The following methods of integration were investigated in the order of listing:
 \item gRPC Remote Procedure Calls
 \item Representational State Transfer API
 \end{itemize}
+\fi
 
 \begin{figure*}
 	\includegraphics[width=\textwidth,height=5cm]{tensorflow-tika-integration}
@@ -36,7 +39,7 @@ The developers of Tensorflow framework recommended to use gRPC based integration
 %\includegraphics[scale=0.40]{tika-tflow-RPC-design}
 
 %% 4. REST
-\subsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:int-rest}
+\subsection{Representational State Transfer (REST) API} \label{sec:int-rest}
 Representation State Transfer (REST) is a popular client-server architecture paradigm for connecting heterogeneous systems without the need of states\cite[Chapter~5]{Fielding:2000:ASD:932295}. The REST application programming interfaces (API) is powered by an HyperText Transfer Protocol (HTTP) which abstracts the complexities of Transmission Control Protocol.
 We crated REST API for tensorflow image recognition using python Flask\cite{}. The Flask based HTTP service registered a TCP port and offered HTTP API end points as shown in Figure \ref{fig:tf-tika-integration} (d).
 An API end point accepted HTTP POST requests with image data in the multi-part-form body. This service loaded the InceptionV3Net \cite{SzegedyVISW15} model during the initialization phase and held the model in memory for reusing it during the future HTTP Requests.
