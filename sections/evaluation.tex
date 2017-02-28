@@ -39,7 +39,7 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		\tabitem Isolation of dependencies and concerns
 		& 
         \rule{0pt}{2.5ex}
-        \tabitem Additional load on secondary storage to share images. \newline
+        \tabitem Additional load on secondary storage to share images \newline
 		\tabitem An extra process is created and destroyed for each call. \newline
 		\tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
 		\\ \hline
@@ -48,23 +48,23 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		& N/A
 		& 
         \rule{0pt}{2.5ex}
-        \tabitem The most efficient utilization of resources. \newline 
-		\tabitem No external IO required since the system is monolithic.
+        \tabitem The most efficient utilization of resources \newline 
+		\tabitem No external IO required since the system is monolithic
 		& 
         \rule{0pt}{2.5ex}
-		\tabitem The JNI native glue code has to be produced for all the platforms. \newline
-		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}.
+		\tabitem Must produce native JNI glue code for  platforms \newline
+		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}
 		\\ \hline
 
 		\textbf{gRPC}
 		& 598ms
 		& 
         \rule{0pt}{2.5ex}
-        \tabitem An efficient way for integrating heterogeneous systems. \newline 
-		\tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization. 
+        \tabitem An efficient way for integrating heterogeneous systems \newline 
+		\tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization
 		& 
         \rule{0pt}{2.5ex}  
-        \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
+        \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients
 		\\ \hline
 		\textbf{REST API}
 		& 253ms
