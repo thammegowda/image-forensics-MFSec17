@@ -3,6 +3,8 @@
 \subsection{Integration techniques}
 The pros and cons of all the integration techniques described in Section \ref{sec:integration} are shown in Table \ref{tab:int-technique}. We conclude that REST API was the best integration technique among all the techniques and hence we recommend it to the users of Apache Tika \cite{TikaAndVision}.
 
+\newcommand{\tabItem}{\leavevmode\llap{\textbullet~}\raggedright}
+
 \begin{table*}[bt]
 	\centering
 	\begin{tabularx}{\textwidth}{
@@ -15,16 +17,16 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		\textbf{Method} & \textbf{Time} & \textbf{Pros} & \textbf{Cons} \\ \hline
 		
 		\textbf{CLI} 
-		& 3s&
+		& 3s &
         \rule{0pt}{2.5ex}
-		\tabitem Easy to develop and test \newline
-		\tabitem Easy to install dependencies \newline
-		\tabitem Isolation of dependencies and concerns
+		\tabitem Easy to develop and test 			\newline
+		\hspace*{0.5pt} \tabitem Easy to install dependencies \newline
+		\hspace*{0.5pt} \tabitem Isolation of dependencies and concerns
 		& 
         \rule{0pt}{2.5ex}
         \tabitem Additional load on secondary storage to share images \newline
-		\tabitem An extra process is created and destroyed for each call. \newline
-		\tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
+		\hspace*{0.5pt} \tabitem An extra process is created and destroyed for each call. \newline
+		\hspace*{0.5pt} \tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
 		\\ \hline
 		
 		\textbf{JNI} 
@@ -32,11 +34,11 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		& 
         \rule{0pt}{2.5ex}
         \tabitem The most efficient utilization of resources \newline 
-		\tabitem No external IO required since the system is monolithic
+		\hspace*{0.5pt} \tabitem No external IO required since the system is monolithic
 		& 
         \rule{0pt}{2.5ex}
 		\tabitem Must produce native JNI glue code for all platforms \newline
-		\tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}
+		\hspace*{0.5pt} \tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}
 		\\ \hline
 		
 		\textbf{gRPC}
@@ -44,7 +46,7 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		& 
         \rule{0pt}{2.5ex}
         \tabitem An efficient way for integrating heterogeneous systems \newline 
-		\tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization
+		\hspace*{0.5pt} \tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization
 		& 
         \rule{0pt}{2.5ex}  
         \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients
@@ -54,13 +56,14 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		&
         \rule{0pt}{2.5ex}
 		\tabitem An efficient way for integrating heterogeneous systems \newline 
-		\tabitem Popular framework in the developer community \newline 
-		\tabitem The underlying HTTP is stable and well documented
+		\hspace*{0.5pt} \tabitem Popular framework in the developer community \newline 
+		\hspace*{0.5pt} \tabitem The underlying HTTP is stable and well documented
 		& 
         \rule{0pt}{2.5ex}
         \tabitem The bandwidth consumption is higher than gRPC due to the extra HTTP headers \newline
 		\\ \hline
 	\end{tabularx}
+    
 	\caption{Brief comparison of integration techniques. \textnormal{The numbers in the `Time' column are the time taken per image on a ubuntu 14.04 LTS docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for test images of size 1024x768 pixels.}}
 	\label{tab:int-technique}
 \end{table*}
