@@ -134,8 +134,8 @@ The cons of this method are
 
 \subsection{Analysis of results}
 \begin{figure}[h]
-	\includegraphics[width=\columnwidth]{top10classes}
-	\caption{Top 10 image classes found in the dataset}
+	\includegraphics[width=\columnwidth]{top10classes2}
+	\caption{Top 10 image classes found in the dataset. As more labeled weapon images become available, we will be able to train a custom classifier to classify weapons with more granularity.}
 	\label{fig:top10ImgClass}
 \end{figure}
 The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. This model has trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
@@ -146,8 +146,8 @@ We cross-validated the predictions by using a subset of human-labeled images. Th
 
 %//TODO: Describe more if space permits
 \begin{figure}[h]
-	\includegraphics[width=\columnwidth]{uk-hack-evaluation2}
-	\caption{Manual cross validation of results for the two weapon types: `revolver' and `rifle'}
+	\includegraphics[width=\columnwidth]{uk-hack-evaluation3}
+	\caption{Manual cross validation of results for the two weapon types: `revolver' and `rifle.' The weapon object should be the top class for all labeled images, however these results demonstrate that the model occassionally identified background objects as primary.}
 	\label{fig:uk-hack-eval}
 \end{figure}
 
