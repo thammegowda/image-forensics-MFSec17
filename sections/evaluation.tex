@@ -1,7 +1,7 @@
 \section {EVALUATION} \label{sec:evaluation}
 
 \subsection{Integration techniques}
-The pros and cons of all the integration techniques described in Section \ref{sec:integration} are shown in Table \ref{tab:int-technique}. We conclude that REST API was the best integration technique among all the techniques and hence we recommend it to the users of Apache Tika \cite{TikaAndVision}.
+The pros and cons of the integration techniques described in Section \ref{sec:integration} are shown in Table \ref{tab:int-technique}. We conclude that REST API was the best integration technique among all the techniques and we recommend it to the users of Apache Tika \cite{TikaAndVision}.
 
 \newcommand{\tabItem}{\leavevmode\llap{\textbullet~}\raggedright}
 
@@ -25,7 +25,7 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		& 
         \rule{0pt}{2.5ex}
         \tabitem Additional load on secondary storage to share images \newline
-		\hspace*{0.5pt} \tabitem An extra process is created and destroyed for each call. \newline
+		\hspace*{0.5pt} \tabitem An extra process is created and destroyed for each call \newline
 		\hspace*{0.5pt} \tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
 		\\ \hline
 		
@@ -64,7 +64,7 @@ The pros and cons of all the integration techniques described in Section \ref{se
 		\\ \hline
 	\end{tabularx}
     
-	\caption{Brief comparison of integration techniques. \textnormal{The numbers in the `Time' column are the time taken per image on a ubuntu 14.04 LTS docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for test images of size 1024x768 pixels.}}
+	\caption{Brief comparison of integration techniques. \textnormal{The numbers in the `Time' column are the time taken per image on an Ubuntu 14.04 LTS Docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for test images of size 1024x768 pixels.}}
 	\label{tab:int-technique}
 \end{table*}
 
@@ -141,11 +141,11 @@ The cons of this method are
 	\caption{Top 10 image classes found in the dataset. As more labeled weapon images become available, we will be able to train a custom classifier to classify weapons with more granularity.}
 	\label{fig:top10ImgClass}
 \end{figure}
-The image classifier model used in our experiments was Inception-V3 \cite{SzegedyVISW15}. This model has trained on ImageNet 2012 dataset which contains 1000 classes\cite{ILSVRC15}.
-The 10 most frequently occurred classes and their frequencies are shown in the Figure \ref{fig:top10ImgClass}. Since the crawlers were focused on retrieving the web pages and linked images that are related to weapons classifieds, the top classes in our dataset were found to be `revolver', and `rifle'
+We used the \textit{Inception v3} image classification model in our experiments \cite{SzegedyVISW15}. This model was trained on the 2012 ImageNet dataset, which contains 1000 classes\cite{ILSVRC15}.
+The 10 most frequently occurring classes and their frequencies are shown in Figure \ref{fig:top10ImgClass}. Since the crawlers were focused on retrieving web pages and linked images related to weapons classifieds, the top classes in our dataset were found to be `revolver' and `rifle.'
 
 \subsection{Manual cross validation of results}
-We cross-validated the predictions by using a subset of human-labeled images. The results are shown in Figure \ref{fig:uk-hack-eval}. The \textit{top k} for $k=1,3,5,7$ considers a prediction as correct if the human annotated label is one among the set of top $k$  predicted labels. We observed that the \textit{top 1} accuracy for the \textit{revolver} class is considerably lesser. By manual verification of the labeled images and its prediction errors, we found a pattern that revolvers being the small structure in the images often surrounded by its holders and toolkits; sometimes they placed on top of other items which are also valid classes in ImageNet corpus. The inception model treated the bigger surroundings as the prominent label than the \textit{revolver} label. Hence the error counts are reduced when $k$ is increased. In addition, our team in memex program were interested in much granular distinction among the \textit{rifles} and \textit{shotguns}. Since the ImageNet corpus does not have annotations for sub categories in \textit{rifles} and \textit{shotguns}, all related truth labels are mapped to \textit{rifles} label. 
+We cross-validated the predictions using a subset of human-labeled images, and the results are shown in Figure \ref{fig:uk-hack-eval}. The \textit{top k} for $k=1,3,5,7$ considers a prediction as correct if the human annotated label is among the set of top $k$  predicted labels. We observed that the \textit{top 1} accuracy for the \textit{revolver} class is considerably lower. Manual inspection of labeled images and prediction errors revealed that, due to revolvers being smaller, they are often surrounded holders and toolkits; at times they rested on top of other items which are also valid classes in ImageNet corpus. The \textit{Inception} model treated the larger surrounding objects as the predominant label rather than the \textit{revolver} label. Hence, the error counts are reduced when $k$ is increased. Going forward, our team is interested in more granular distinctions. For instance, the model doesn't discern between \textit{rifles} and \textit{shotguns} - all of these weapons are mapped to the \textit{rifles} label. 
 
 %//TODO: Describe more if space permits
 \begin{figure}[h]
