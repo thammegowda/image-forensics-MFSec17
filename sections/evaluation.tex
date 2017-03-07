@@ -1,154 +1,24 @@
 \section {EVALUATION} \label{sec:evaluation}
 
-\subsection{Integration techniques}
-The pros and cons of the integration techniques described in Section \ref{sec:integration} are shown in Table \ref{tab:int-technique}. We conclude that REST API was the best integration technique among all the techniques and we recommend it to the users of Apache Tika \cite{TikaAndVision}.
+We carefully evaluated our integrations in several qualitative and quantitative areas. We will discuss that evaluation in this section. For each of our integration interfaces (CLI, gRPC, and REST API), we ran the integration against a single test image from Wikipedia as a baseline, and measured the amount of time from passing the image to Tika (and Tensorflow) to the return of a classification result from the API. All single-image tests were run on an Ubuntu 14.04 LTS Docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for test images of size 1024x768 pixels. The slowest integration by far was the CLI integration which took 3 seconds to return a result, the fastest integration was the REST integration at 253ms, about twice as fast as the gRPC integration at 598ms. However, REST uses more bandwidth due to additional metadata introduced by HTTP headers in the packets, compared to gRPC which does not require additional HTTP headers.
 
-\newcommand{\tabItem}{\leavevmode\llap{\textbullet~}\raggedright}
+The REST integration benefitted from a pre-loaded ImageNet/inception model, and light-weight dependencies and low overhead. The gRPC interface, while fast, suffered qualitatively from relying on conflicting HTTP client library transitive dependencies, making it difficult to integrate with some functionality from older HTTP clients and reducing the number of platforms it successfully deploys on. Of course though slow, the CLI has the advantage of not requiring both a client and a server, eliminating one less point of failure in a distributed setting. However, its slowness can be attributed to the extra process created per invocation, and the IO for each call since the model file is loaded and unloaded for each process. In addition, the ImageNet/Inception model is approximately 200MB in size, so there is 200MB of additional I/O per parse call.
 
-\begin{table*}[bt]
-	\centering
-	\begin{tabularx}{\textwidth}{
-			|p{\dimexpr.08\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
-			|p{\dimexpr.06\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 1
-			|p{\dimexpr.43\linewidth-2\tabcolsep-1.3333\arrayrulewidth}% column 2
-			|p{\dimexpr.43\linewidth-2\tabcolsep-1.3333\arrayrulewidth}|% column 3
-		} \hline
-		
-		\textbf{Method} & \textbf{Time} & \textbf{Pros} & \textbf{Cons} \\ \hline
-		
-		\textbf{CLI} 
-		& 3s &
-        \rule{0pt}{2.5ex}
-		\tabitem Easy to develop and test 			\newline
-		\hspace*{0.5pt} \tabitem Easy to install dependencies \newline
-		\hspace*{0.5pt} \tabitem Isolation of dependencies and concerns
-		& 
-        \rule{0pt}{2.5ex}
-        \tabitem Additional load on secondary storage to share images \newline
-		\hspace*{0.5pt} \tabitem An extra process is created and destroyed for each call \newline
-		\hspace*{0.5pt} \tabitem Additional IO for each call since the model file is loaded and unloaded for each process  
-		\\ \hline
-		
-		\textbf{JNI} 
-		& N/A
-		& 
-        \rule{0pt}{2.5ex}
-        \tabitem The most efficient utilization of resources \newline 
-		\hspace*{0.5pt} \tabitem No external IO required since the system is monolithic
-		& 
-        \rule{0pt}{2.5ex}
-		\tabitem Must produce native JNI glue code for all platforms \newline
-		\hspace*{0.5pt} \tabitem Utilities like \texttt{protobuf} should also be glued with JNI because they are required for deserializing models\cite{javacpp-240}
-		\\ \hline
-		
-		\textbf{gRPC}
-		& 598ms
-		& 
-        \rule{0pt}{2.5ex}
-        \tabitem An efficient way for integrating heterogeneous systems \newline 
-		\hspace*{0.5pt} \tabitem The client system is easily portable, the server system can also be easily portable by making use of containerization or virtualization
-		& 
-        \rule{0pt}{2.5ex}  
-        \tabitem The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients
-		\\ \hline
-		\textbf{REST API}
-		& 253ms
-		&
-        \rule{0pt}{2.5ex}
-		\tabitem An efficient way for integrating heterogeneous systems \newline 
-		\hspace*{0.5pt} \tabitem Popular framework in the developer community \newline 
-		\hspace*{0.5pt} \tabitem The underlying HTTP is stable and well documented
-		& 
-        \rule{0pt}{2.5ex}
-        \tabitem The bandwidth consumption is higher than gRPC due to the extra HTTP headers \newline
-		\\ \hline
-	\end{tabularx}
-    
-	\caption{Brief comparison of integration techniques. \textnormal{The numbers in the `Time' column are the time taken per image on an Ubuntu 14.04 LTS Docker container running on MacBook Pro 2013 model (2.8GhZ Core i7 and SSD storage) for test images of size 1024x768 pixels.}}
-	\label{tab:int-technique}
-\end{table*}
+While we did explore JNI integrations in our interface, we did not implement a full solution as we would have had to produce JNI glue code for all platforms, and additionally utilities such as Google's ProtoBuffers - a dependency required by Tensorflow - would have to be integrated with the JNI because ProtoBuffers is required for deserializing models such as ImageNet/Inception\cite{javacpp-240}. The results both qualitatively and quantitatively were encouraging in that using the REST interface we were able to index the entire 1.4 million image weapons dataset from MEMEX in a little over 4 days.
 
-%%%%%%%% COMMENT BEGIN
-\iffalse
-\subsubsection{Command Line Invocation (CLI)} \label{sec:eval-cli}
-The average time taken to recognize image in this method was 6 seconds.
-
-The pros of Command Line Interface:
-\begin{itemize}
-	\item Easy to develop and test
-	\item Easy to install the requirements
-	\item Isolation of dependencies / concerns
-\end{itemize}
-
-The cons of this technique:
-\begin{itemize}
-	\item The image data is shared via secondary storage which puts additional load on the secondary storage.
-	\item An independent process is created and destroyed for every parse call.
-	\item The ImageNet model is loaded and unloaded for every parse call due to ephemeral nature of processes. The InceptionV3 model used in our experiments is approximately 200MB in size, thus 200MB of additional IO for each parse call.
-\end{itemize}
-
-%% 2. JNI
-\subsubsection{Java Native Interface (JNI)} \label{sec:eval-jni}
-
-The pros of this method are
-\begin{itemize}
-	\item The most efficient utilization of resources
-	\item No external input-output required as the entire task runs in a single process.
-\end{itemize}
-
-The cons of this method are:
-\begin{itemize}
-	\item The JNI glue code has to be compiled and packaged for all the platforms.
-	\item Utilities like \texttt{protobuf} should also be glued with JNI, because they are required for deserializing models\cite{javacpp-240}.
-\end{itemize}
-
-%% 3. RPC
-\subsubsection{gRPC Remote procedure Call (gRPC)} \label{sec:eval-rpc}
-
-The pros of this method are
-\begin{itemize}
-	\item An efficient way for integrating heterogeneous systems.
-	\item The client system is easily portable, server system can also be easily portable by making use of containerization or virtualization.
-\end{itemize}
-
-The cons of this method are:
-\begin{itemize}
-	\item The gRPC client depended on specific versions of transitive dependencies such as HTTP Client which conflicts with existing functionality based on older HTTP Clients.
-\end{itemize}
-
-%% 4. REST
-\subsubsection{Representational State Transfer (REST) Application Programming Interface (API)} \label{sec:eval-rest}
-
-The average REST API call was 260 milliseconds when the client and server were in the same host (i.e., the connection via loopback interface).
-
-The pros of this method are
-\begin{itemize}
-	\item An efficient and popular way for integrating heterogeneous systems.
-	\item Popular framework among developer community.
-	\item The underlying HTTP is stable and well documented.
-\end{itemize}
-
-The cons of this method are
-\begin{itemize}
-	\item The performance is slightly lower than gRPC.
-	\item Slightly higher bandwidth usage due to additional metadata introduced by HTTP to the packets.
-\end{itemize}
-\fi  %% COMMENT END
-
-\subsection{Analysis of results}
-\begin{figure}[h]
+\begin{figure}
 	\includegraphics[width=\columnwidth]{top10classes2}
 	\caption{Top 10 image classes found in the dataset. As more labeled weapon images become available, we will be able to train a custom classifier to classify weapons with more granularity.}
 	\label{fig:top10ImgClass}
 \end{figure}
-We used the \textit{Inception v3} image classification model in our experiments \cite{SzegedyVISW15}. This model was trained on the 2012 ImageNet dataset, which contains 1000 classes\cite{ILSVRC15}.
-The 10 most frequently occurring classes and their frequencies are shown in Figure \ref{fig:top10ImgClass}. Since the crawlers were focused on retrieving web pages and linked images related to weapons classifieds, the top classes in our dataset were found to be `revolver' and `rifle.'
 
-\subsection{Manual cross validation of results}
+
+In addition to qualitative and quantitative evaluation of our integration techniques with respect to automatically running over the large MEMEX weapons dataset, we also evaluate the results of our image classification.  We used the \textit{Inception v3} image classification model in our experiments \cite{SzegedyVISW15}. This model was trained on the 2012 ImageNet dataset, which contains 1000 classes\cite{ILSVRC15}. The 10 most frequently occurring classes and their frequencies are shown in Figure \ref{fig:top10ImgClass}. Since the crawlers were focused on retrieving web pages and linked images related to weapons classifieds, the top classes in our dataset were found to be `revolver' and `rifle.' Automatically identifying 'rifle' in this dataset was a promising result, as it gave investigators leads in discerning whether these were long guns, which have been increasingly used in weapons related deaths over the past decade. Also promising was the second most occuring class 'assault rifle' which provides investigative leads into potentially automatic weapons in the dataset.
+
 We cross-validated the predictions using a subset of human-labeled images, and the results are shown in Figure \ref{fig:uk-hack-eval}. The \textit{top k} for $k=1,3,5,7$ considers a prediction as correct if the human annotated label is among the set of top $k$  predicted labels. We observed that the \textit{top 1} accuracy for the \textit{revolver} class is considerably lower. Manual inspection of labeled images and prediction errors revealed that, due to revolvers being smaller, they are often surrounded holders and toolkits; at times they rested on top of other items which are also valid classes in ImageNet corpus. The \textit{Inception} model treated the larger surrounding objects as the predominant label rather than the \textit{revolver} label. Hence, the error counts are reduced when $k$ is increased. Going forward, our team is interested in more granular distinctions. For instance, the model doesn't discern between \textit{rifles} and \textit{shotguns} - all of these weapons are mapped to the \textit{rifles} label. 
 
 %//TODO: Describe more if space permits
-\begin{figure}[h]
+\begin{figure}
 	\includegraphics[width=\columnwidth]{uk-hack-evaluation3}
 	\caption{Manual cross validation of results for the two weapon types: `revolver' and `rifle.' The weapon object should be the top class for all labeled images, however these results demonstrate that the model occassionally identified background objects as primary.}
 	\label{fig:uk-hack-eval}
