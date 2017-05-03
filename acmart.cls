@@ -37,7 +37,7 @@
 %%   Right brace   \}     Tilde         \~}
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{acmart}
-[2017/03/30 v1.33 Typesetting articles for Association of
+[2017/04/23 v1.35 Typesetting articles for Association of
 Computing Machinery]
 \def\@classname{acmart}
 \InputIfFileExists{acmart-preload-hook.tex}{%
@@ -278,7 +278,7 @@ Computing Machinery]
 \newcommand{\bibstyle@acmauthoryear}{%
   \setcitestyle{%
     authoryear,%
-    open={(},close={)},citesep={;},%
+    open={[},close={]},citesep={;},%
     aysep={},yysep={,},%
     notesep={, }}}
 \newcommand{\bibstyle@acmnumeric}{%
@@ -1110,8 +1110,8 @@ Computing Machinery]
 \def\@acmBadgeL@image{}
 \def\startPage#1{\def\@startPage{#1}}
 \startPage{}
-\def\terms#1{\def\@terms{#1}}
-\terms{}
+\def\terms#1{\ClassWarning{\@classname}{The command \string\terms{} is
+    obsolete.  I am going to ignore it}}
 \def\keywords#1{\def\@keywords{#1}}
 \keywords{}
 \renewenvironment{abstract}{\Collect@Body\@saveabstract}{}
@@ -1203,11 +1203,13 @@ Computing Machinery]
   \fi
   \ifnum\acm@copyrightmode=3\relax % rightsretained
    \@acmownedfalse
+   \acmPrice{}%
   \fi
   \ifnum\acm@copyrightmode=4\relax % usgov
    \@printpermissiontrue
    \@printcopyrightfalse
    \@acmownedfalse
+   \acmPrice{}%
   \fi
   \ifnum\acm@copyrightmode=6\relax % cagov
    \@acmownedfalse
@@ -1229,30 +1231,30 @@ Computing Machinery]
 \def\@copyrightowner{%
   \ifcase\acm@copyrightmode\relax % none
   \or % acmcopyright
-  ACM\@.
+  Association for Computing Machinery.
   \or % acmlicensed
   Copyright held by the owner/author(s). Publication rights licensed to
-  ACM\@.
+  Association for Computing Machinery.
   \or % rightsretained
   Copyright held by the owner/author(s).
   \or % usgov
   \or % usgovmixed
-  ACM\@.
+  Association for Computing Machinery.
   \or % cagov
   Crown in Right of Canada.
   \or %cagovmixed
-  ACM\@.
+  Association for Computing Machinery.
   \or %licensedusgovmixed
   Copyright held by the owner/author(s). Publication rights licensed to
-  ACM\@.
+  Association for Computing Machinery.
   \or %licensedcagovmixed
   Copyright held by the owner/author(s). Publication rights licensed to
-  ACM\@.
+  Association for Computing Machinery.
   \or % othergov
-  ACM\@.
+  Association for Computing Machinery.
   \or % licensedothergov
   Copyright held by the owner/author(s). Publication rights licensed to
-  ACM\@.
+  Association for Computing Machinery.
   \fi}
 \def\@formatdoi#1{\url{https://doi.org/#1}}
 \def\@copyrightpermission{%
@@ -1412,12 +1414,12 @@ Computing Machinery]
       \if@printpermission\@copyrightpermission\par\fi
     \fi
     \if@ACM@manuscript\else
-       \if@ACM@journal\else % Print the conference short name
-         {\itshape \acmConference@shortname, \acmConference@venue}\par
+       \if@ACM@journal\else % Print the conference information
+         {\itshape \acmConference@shortname, \acmConference@date, \acmConference@venue}\par
        \fi
     \fi
     \if@printcopyright
-      \copyright\ \@copyrightyear\ \@copyrightowner\
+      \copyright\ \@copyrightyear\ \@copyrightowner\\
     \else
      \@copyrightyear.\
     \fi
@@ -1440,13 +1442,13 @@ Computing Machinery]
           \fi\\
         \else
           \if@ACM@journal
-            \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle\
-            \$\@acmPrice\\
-            DOI: \nolinkurl{\@acmDOI}%
+            \@permissionCodeOne/\@acmYear/\@acmMonth-ART\@acmArticle
+            \ifx\@acmPrice\@empty\else\ \$\@acmPrice\fi\\
+            \@formatdoi{\@acmDOI}%
           \else % Conference
-             \@acmISBN
+             ACM~ISBN~\@acmISBN
              \ifx\@acmPrice\@empty.\else\dots\$\@acmPrice\fi\\
-             DOI: \nolinkurl{\@acmDOI}%
+             \@formatdoi{\@acmDOI}%
           \fi
         \fi
       \fi}
@@ -1458,10 +1460,6 @@ Computing Machinery]
       {\@specialsection{CCS Concepts}%
          \@concepts\par}\egroup
      \fi
-   \fi
-   \if\@terms\@empty\else\bgroup
-      {\@specialsection{General Terms}%
-         \@terms\par}\egroup
    \fi
    \ifx\@keywords\@empty\else\bgroup
       {\if@ACM@journal
@@ -1925,7 +1923,7 @@ Computing Machinery]
          \ (\acmConference@shortname)\fi
          ,} \ref{TotPages}~pages.
   \fi\par
-  \noindent DOI: \nolinkurl{\@acmDOI}
+  \noindent\@formatdoi{\@acmDOI}
 \par\egroup}
 \def\@printendtopmatter{\par\medskip
   \ifcase\ACM@format@nr
@@ -1952,22 +1950,27 @@ Computing Machinery]
 \RequirePackage{fancyhdr}
 \if@ACM@review
   \newsavebox{\ACM@linecount@bx}
-  \savebox{\ACM@linecount@bx}[4em][t]{\parbox[t]{4em}{%
-      \newlength\ACM@linecount@bxht\setlength{\ACM@linecount@bxht}{-\baselineskip}
-      \@tempcnta\@ne\relax
-      \loop{\color{ACMRed}\scriptsize\the\@tempcnta}\\
-      \advance\@tempcnta by \@ne
-      \addtolength{\ACM@linecount@bxht}{\baselineskip}
-      \ifdim\ACM@linecount@bxht<\textheight\repeat}}
+  \newlength\ACM@linecount@bxht
+  \newcount\ACM@linecount
+  \ACM@linecount\@ne\relax
+  \def\ACM@mk@linecount{%
+    \savebox{\ACM@linecount@bx}[4em][t]{\parbox[t]{4em}{%
+        \setlength{\ACM@linecount@bxht}{-\baselineskip}%
+        \loop{\color{ACMRed}\scriptsize\the\ACM@linecount}\\
+        \global\advance\ACM@linecount by \@ne
+        \addtolength{\ACM@linecount@bxht}{\baselineskip}%
+        \ifdim\ACM@linecount@bxht<\textheight\repeat}}}
 \fi
 \def\ACM@linecountL{%
   \if@ACM@review
+  \ACM@mk@linecount
   \begin{picture}(0,0)%
     \put(-26,-22){\usebox{\ACM@linecount@bx}}%
   \end{picture}%
   \fi}
 \def\ACM@linecountR{%
   \if@ACM@review
+  \ACM@mk@linecount
   \begin{picture}(0,0)%
     \put(20,-22){\usebox{\ACM@linecount@bx}}%
   \end{picture}%
